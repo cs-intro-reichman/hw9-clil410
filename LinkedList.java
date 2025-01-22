@@ -156,7 +156,7 @@ public class LinkedList {
 	 *         if index is negative or greater than or equal to size
 	 */
 	public MemoryBlock getBlock(int index) {
-		if (index < 0 || index > size) {
+		if (index <= 0 || index > size) {
 			throw new IllegalArgumentException(
 					"index must be between 0 and size");
 		}
@@ -200,7 +200,7 @@ public class LinkedList {
 	 */
 	public void remove(Node node) {
 		if (node == null) {
-			return;
+			throw new NullPointerException("ERROR NullPointerException!");
 		}
 		int indexOfNode = indexOf(node.block);
 		if (indexOfNode == -1) {
@@ -210,11 +210,13 @@ public class LinkedList {
 		Node prev = null;
 		if (indexOfNode == 0) {
 			first = current.next;
+			if (first == null) {
+				last = null;
+			}
 			size--;
 			return;
 		}
 		int counter = 0;
-
 		while (current != null && counter != indexOfNode) {
 			prev = current;
 			current = current.next;
@@ -248,6 +250,9 @@ public class LinkedList {
 		Node prev = null;
 		if (index == 0) {
 			first = current.next;
+			if (first == null) {  // If list becomes empty
+				last = null;
+			}
 			size--;
 			return;
 		}
@@ -278,17 +283,33 @@ public class LinkedList {
 	 *         if the given memory block is not in this list
 	 */
 	public void remove(MemoryBlock block) {
-		if (indexOf(block) == -1) {
+		if (block == null || indexOf(block) == -1) {
 			throw new IllegalArgumentException(
-					"the given memory block is not in this list");
+					"index must be between 0 and size");
 		}
 		Node current = first; 
+		Node prev = null; 
 		int counter = 0;
+		if (block.equals(first.block)) {
+			first = first.next;
+			if (first == null) {  
+				last = null;
+			}
+			size--;
+			return;
+		}
 		while (current != null) {
-			if (block.equals(getBlock(counter))) {
-				remove(counter);
+			if (block.equals(current.block)) {
+				if (current == last) {
+					last = prev;
+					prev.next = null;
+				} else {
+					prev.next = current.next;
+				}
+				size--;
 				return;
 			}
+			prev = current;
 			current = current.next;
 			counter++;
 		}
