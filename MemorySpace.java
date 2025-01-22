@@ -94,11 +94,11 @@ public class MemorySpace {
 	 *            the starting address of the block to freeList
 	 */
 	public void free(int address) {
-		int counter = 0;
-		Node current = allocatedList.getNode(counter);
 		if (allocatedList.getSize() == 0) {
 			throw new IllegalArgumentException("index must be between 0 and size");
 		}
+		int counter = 0;
+		Node current = allocatedList.getNode(counter);
 		while (current != null) {
 			if (current.block.baseAddress == address) {
 				allocatedList.remove(current);
