@@ -94,7 +94,7 @@ public class MemorySpace {
 	 *            the starting address of the block to freeList
 	 */
 	public void free(int address) {
-		if (allocatedList.getSize() == 0) {
+		if (allocatedList.getSize() == 0 || address < 0 || address > allocatedList.getSize()) {
 			throw new IllegalArgumentException("index must be between 0 and size");
 		}
 		Node checkFreed = freeList.getFirst();
@@ -113,7 +113,7 @@ public class MemorySpace {
 			}
 			checkAddress = checkAddress.next;
 		}
-
+		
 		if (!isValidAddress) {
 			throw new IllegalArgumentException("index must be between 0 and size");
 		}
@@ -127,9 +127,10 @@ public class MemorySpace {
 			} 
 			counter++;
 			current = allocatedList.getNode(counter);
-		}
+			}
 		throw new IllegalArgumentException("index must be between 0 and size");
-	}
+		}	
+		
 	
 	/**
 	 * A textual representation of the free list and the allocated list of this memory space, 
