@@ -58,7 +58,30 @@ public class MemorySpace {
 	 * @return the base address of the allocated block, or -1 if unable to allocate
 	 */
 	public int malloc(int length) {		
-		//// Replace the following statement with your code
+		//1. scan the freelist 
+		int counter = 0;
+		Node current = freeList.getNode(counter);
+		while (current != null) {
+			if (current.block.length >= length) {
+				//1. create new memoryblock
+				MemoryBlock newMB = new MemoryBlock(current.block.baseAddress, length);
+				//2. append to the end of the allocatedlist and update base address and length in the allocated block
+				allocatedList.addLast(newMB);
+				int newBaseAddress = current.block.baseAddress;
+				//3. change baseadress and length in the freelist or remove
+				if (current.block.length == length) {
+					freeList.remove(counter);	
+				} else {
+					current.block.baseAddress += length;
+					current.block.length -= length;
+				}
+				//4.return base address
+				return newBaseAddress;
+			} else { 
+				counter++;
+				current = freeList.getNode(counter);
+			}
+		}
 		return -1;
 	}
 
@@ -71,7 +94,18 @@ public class MemorySpace {
 	 *            the starting address of the block to freeList
 	 */
 	public void free(int address) {
-		//// Write your code here
+		int counter = 0;
+		Node current = allocatedList.getNode(counter);
+		while (current != null) {
+			if (current.block.baseAddress == address) {
+				allocatedList.remove(current);
+				freeList.addLast(current.block); 
+				return;
+			} else {
+				counter++;
+				current = allocatedList.getNode(counter);
+			}
+		}
 	}
 	
 	/**
@@ -88,7 +122,20 @@ public class MemorySpace {
 	 * In this implementation Malloc does not call defrag.
 	 */
 	public void defrag() {
-		/// TODO: Implement defrag test
-		//// Write your code here
+		LinkedList betterFreeList = new LinkedList();
+		Node current = freeList.getNode(0);
+		while (current != null) {
+			Node toCheckOn = current.next;
+			while (toCheckOn != null) {
+				if (current.block.baseAddress + current.block.length == toCheckOn.block.baseAddress) {
+					current.block.length += toCheckOn.block.length;
+					freeList.remove(toCheckOn);
+				} else {
+					toCheckOn = toCheckOn.next;
+				}
+			}
+			betterFreeList.addLast(current.block);
+			current=current.next;
+		}
 	}
 }
