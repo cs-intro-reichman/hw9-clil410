@@ -156,7 +156,7 @@ public class LinkedList {
 	 *         if index is negative or greater than or equal to size
 	 */
 	public MemoryBlock getBlock(int index) {
-		if (index <= 0 || index > size) {
+		if (index < 0 || index > size) {
 			throw new IllegalArgumentException(
 					"index must be between 0 and size");
 		}
@@ -283,7 +283,7 @@ public class LinkedList {
 	 *         if the given memory block is not in this list
 	 */
 	public void remove(MemoryBlock block) {
-		if (block == null || indexOf(block) == -1) {
+		if (indexOf(block) == -1) {
 			throw new IllegalArgumentException(
 					"index must be between 0 and size");
 		}

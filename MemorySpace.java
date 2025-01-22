@@ -96,9 +96,9 @@ public class MemorySpace {
 	public void free(int address) {
 		int counter = 0;
 		Node current = allocatedList.getNode(counter);
-		if (allocatedList.getSize() == 0) {
-			throw new IllegalArgumentException("index must be between 0 and size");
-		}
+		//if (allocatedList.getSize() == 0) {
+		//	throw new IllegalArgumentException("index must be between 0 and size");
+		//}
 		while (current != null) {
 			if (current.block.baseAddress == address) {
 				allocatedList.remove(current);
