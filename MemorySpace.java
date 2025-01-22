@@ -97,6 +97,9 @@ public class MemorySpace {
 		if (allocatedList.getSize() == 0) {
 			throw new IllegalArgumentException("index must be between 0 and size");
 		}
+		if (address < 0 || address > allocatedList.getSize()) {
+			throw new IllegalArgumentException("index must be between 0 and size");
+		}
 		Node checkFreed = freeList.getFirst();
 		while (checkFreed != null) {
 			if (checkFreed.block.baseAddress == address) {
