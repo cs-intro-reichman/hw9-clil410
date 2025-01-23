@@ -97,43 +97,16 @@ public class MemorySpace {
 		if (allocatedList.getSize() == 0) {
 			throw new IllegalArgumentException("index must be between 0 and size");
 		}
-		if (address < 0 || address > allocatedList.getSize()) {
-			throw new IllegalArgumentException("index must be between 0 and size");
-		}
-		Node checkFreed = freeList.getFirst();
-		while (checkFreed != null) {
-			if (checkFreed.block.baseAddress == address) {
-				throw new IllegalArgumentException("index must be between 0 and size");
-			}
-			checkFreed = checkFreed.next;
-		}
-		boolean isValidAddress = false;
-		Node checkAddress = allocatedList.getFirst();
-		while (checkAddress != null) {
-			if (checkAddress.block.baseAddress == address) {
-				isValidAddress = true;
-				break;
-			}
-			checkAddress = checkAddress.next;
-		}
-		
-		if (!isValidAddress) {
-			throw new IllegalArgumentException("index must be between 0 and size");
-		}
-		int counter = 0;
-		Node current = allocatedList.getNode(counter);
-		while (current != null) {
-			if (current.block.baseAddress == address) {
-				allocatedList.remove(current);
-				freeList.addLast(current.block); 
+		ListIterator allocIterator = allocatedList.iterator();
+		while (allocIterator.hasNext()) {
+			MemoryBlock alloCurrentBlock = allocIterator.next();
+			if (alloCurrentBlock.baseAddress == address) {
+				allocatedList.remove(alloCurrentBlock);
+				freeList.addLast(alloCurrentBlock);
 				return;
-			} 
-			counter++;
-			current = allocatedList.getNode(counter);
 			}
-		throw new IllegalArgumentException("index must be between 0 and size");
-		}	
-		
+		}
+	}
 	
 	/**
 	 * A textual representation of the free list and the allocated list of this memory space, 
